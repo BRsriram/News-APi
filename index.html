@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>News API</title>
+    <link rel="stylesheet" href="index.css" type="text/css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,300;0,400;1,900&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <!-- navbar section -->
+    <header>
+      <div class="navbar">
+        <div class="nav-brand">
+          <h1>News.</h1>
+        </div>
+        <div class="nav-items">
+          <input
+            type="search"
+            name="search"
+            id="input-search"
+            placeholder="Search..."
+          />
+          <button type="submit" id="btn">search</button>
+          <p id="invalidmsg"></p>
+        </div>
+      </div>
+    </header>
+
+    <!-- main section -->
+    <main>
+      <section>
+        <div class="box-1 box">
+          <figure>
+            <img src="image-omelette.jpeg" alt="img1" />
+          </figure>
+          <b>box 1</b>
+          <p>
+            Lorem ipsum dolor, sit amet consectetur adipisicing elit. Vel
+            accusantium aperiam in necessitatibus. Incidunt, itaque.
+          </p>
+        </div>
+        <div class="box-2 box">
+          <figure>
+            <img src="image-omelette.jpeg" alt="img2" />
+          </figure>
+          <b>box 2</b>
+          <p>
+            Lorem ipsum dolor, sit amet consectetur adipisicing elit. Vel
+            accusantium aperiam in necessitatibus. Incidunt, itaque.
+          </p>
+        </div>
+        <div class="box-3 box">
+          <figure>
+            <img src="image-omelette.jpeg" alt="img3" />
+          </figure>
+          <b>box 3</b>
+          <p>
+            Lorem ipsum dolor, sit amet consectetur adipisicing elit. Vel
+            accusantium aperiam in necessitatibus. Incidunt, itaque.
+          </p>
+        </div>
+        <div class="box-4 box">
+          <figure>
+            <img src="image-omelette.jpeg" alt="img4" />
+          </figure>
+          <b>box 4</b>
+          <p>
+            Lorem ipsum dolor, sit amet consectetur adipisicing elit. Vel
+            accusantium aperiam in necessitatibus. Incidunt, itaque.
+          </p>
+        </div>
+        <div class="box-5 box">
+          <figure>
+            <img src="image-omelette.jpeg" alt="img5" />
+          </figure>
+          <b>box 5</b>
+          <p>
+            Lorem ipsum dolor, sit amet consectetur adipisicing elit. Vel
+            accusantium aperiam in necessitatibus. Incidunt, itaque.
+          </p>
+        </div>
+        <div class="box-6 box">
+          <figure>
+            <img src="image-omelette.jpeg" alt="img6" />
+          </figure>
+          <b>box 6</b>
+          <p>
+            Lorem ipsum dolor, sit amet consectetur adipisicing elit. Vel
+            accusantium aperiam in necessitatibus. Incidunt, itaque.
+          </p>
+        </div>
+        <div class="box-7 box">
+          <figure>
+            <img src="image-omelette.jpeg" alt="img7" />
+          </figure>
+          <b>box 7</b>
+          <p>
+            Lorem ipsum dolor, sit amet consectetur adipisicing elit. Vel
+            accusantium aperiam in necessitatibus. Incidunt, itaque.
+          </p>
+        </div>
+        <div class="box-8 box">
+          <figure>
+            <img src="image-omelette.jpeg" alt="img8" />
+          </figure>
+          <b>box 8</b>
+          <p>
+            Lorem ipsum dolor, sit amet consectetur adipisicing elit. Vel
+            accusantium aperiam in necessitatibus. Incidunt, itaque.
+          </p>
+        </div>
+        <div class="box-9 box">
+          <figure>
+            <img src="image-omelette.jpeg" alt="img9" />
+          </figure>
+          <b>box 9</b>
+          <p>
+            Lorem ipsum dolor, sit amet consectetur adipisicing elit. Vel
+            accusantium aperiam in necessitatibus. Incidunt, itaque.
+          </p>
+        </div>
+      </section>
+    </main>
+    <div></div>
+  </body>
+  <script>
+    //  https://newsapi.org/v2/top-headlines?country=us&pageSize=9&apikey=${API_key}
+    let API_key = "26232ca4e0164f009e1212e67fe05723";
+    let API = `https://newsapi.org/v2/top-headlines?sources=techcrunch&pageSize=9&apikey=${API_key}`;
+    const boxes = document.querySelectorAll(".box");
+    const main = document.querySelector("main");
+    const btn = document.getElementById("btn");
+    // function starts
+    async function ApiCall(API) {
+      try {
+        const Res = await fetch(API);
+        const ResJson = await Res.json();
+        return ResJson.articles;
+      } catch (err) {
+        ErrCatch(err);
+      }
+    }
+    let LoadApi = ApiCall(API);
+    console.log(LoadApi);
+
+    SetItems(LoadApi);
+
+    //search element api
+    btn.addEventListener("click", function () {
+      const SearchInput = document.getElementById("input-search").value.trim();
+      if (SearchInput === "") {
+        let InvalidMsg = document.getElementById("invalidmsg");
+        InvalidMsg.style.color = "red";
+        InvalidMsg.innerHTML = "Search properly..";
+      } else {
+        let searchapi = `https://newsapi.org/v2/everything?q=${SearchInput}&pageSize=9&apikey=${API_key}`;
+        let SearchApi = ApiCall(searchapi);
+        SetItems(SearchApi);
+      }
+    });
+
+    // set img, p, for boxes
+    function SetItems(param) {
+      param.then((res) => {
+        res.forEach(function (element, index) {
+          let img = element.urlToImage;
+          if (img != null) {
+            boxes[index].querySelector("img").src = img;
+          } else {
+            boxes[index].querySelector("img").src = "noimage.png";
+          }
+          boxes[index].querySelector("b").innerHTML = element.title;
+          if (element.description === null) {
+            let content = boxes[index].querySelector("p");
+            content.innerHTML = "NO DESCRIPTION";
+          } else {
+            boxes[index].querySelector("p").innerHTML = element.description;
+          }
+        });
+      });
+    }
+    function ErrCatch(err) {
+      main.style.display = "none";
+      let p = document.createElement("p");
+      let div = document.querySelector("div").appendChild(p);
+      p.innerHTML =
+        err +
+        ` SORRY! We can't search your Result.please secure connection with internet `;
+      div.className = "err";
+    }
+  </script>
+</html>
